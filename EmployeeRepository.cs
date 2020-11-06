@@ -174,5 +174,70 @@ namespace EmployeeADO.net
                 connection.Close();
             }   
         }
+        public void GetEmployeeDetailsJoiningBetweenDate(DateTime date)
+        {
+            //Establishing connection
+            DBConnection con = new DBConnection();
+            connection = con.GetConnection();
+
+            try
+            {
+                /// Using the connection established
+                using (connection)
+                {
+                    /// Query to get the data from the table
+                    string query = @"select * from dbo.employeepayroll where start between CAST(@parameter as date) 
+                                    and CAST(getdate() as date)";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connection);
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", date);
+                    /// Opening the connection to start mapping
+                    connection.Open();
+                    /// executing the sql data reader to fetch the records
+                    SqlDataReader reader = command.ExecuteReader();
+                    /// executing for not null
+                    if (reader.HasRows)
+                    {
+                        EmployeeModel model = new EmployeeModel();
+                        /// Moving to the next record from the table
+                        /// Mapping the data to the employee model class object
+                        while (reader.Read())
+                        {
+                            model.id = reader.GetInt32(0);
+                            model.name = reader.GetString(1);
+                            model.start = reader.GetDateTime(2);
+                            model.gender = reader.GetString(3);
+                            model.phone_number = reader.GetString(4);
+                            model.address = reader.GetString(5);
+                            model.department = reader.GetString(6);
+                            model.basic_pay = reader.GetDouble(7);
+                            model.deductions = reader.GetInt32(8);
+                            model.taxable_pay = reader.GetDouble(9);
+                            model.income_tax = reader.GetDouble(10);
+                            model.net_pay = reader.GetDouble(11);
+                            Console.WriteLine(model.id + " " + model.name + " " + model.start + " " + model.gender + " "
+                                + model.phone_number + " " + model.address + " " + model.department + " " + model.basic_pay + " " + model.deductions + " "
+                                + model.taxable_pay + " " + model.income_tax + " " + model.net_pay + " ");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No data found");
+                    }
+                    reader.Close();
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
+    
 }
