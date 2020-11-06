@@ -12,7 +12,7 @@ namespace EmployeeADO.net
     public class DBConnection
     {
         //Connection string which stores the address of the database
-        public string con = @"Data Source=LAPTOP-V5IRNHKS\SQLEXPRESS;User ID=akash;Password=akash2507;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        public string con = @"Data Source=LAPTOP-V5IRNHKS\SQLEXPRESS;Initial Catalog=employee_payroll;User ID=akash;Password=akash2507;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         /// <summary>
         /// Gets the connection.

@@ -8,6 +8,7 @@ namespace EmployeeADO.net
         {
             EmployeeRepository tool = new EmployeeRepository();
             tool.Connection();
+            tool.GetEmployeeDetails();
         }
     }
 }
