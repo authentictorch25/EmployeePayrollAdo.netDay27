@@ -238,6 +238,60 @@ namespace EmployeeADO.net
                 connection.Close();
             }
         }
-    }
-    
+        public void GetTheDetailOfSalaryForGender(string gender)
+        {
+            //Establishing connection
+            DBConnection con = new DBConnection();
+            connection = con.GetConnection();
+            try
+            {
+                /// Using the connection established
+                using (connection)
+                {
+                    /// Query to get the data from the table
+                    string query = @"select gender,count(basic_pay) as EmpCount,min(basic_pay) as MinSalary,max(basic_pay) 
+                                   as MaxSalary,sum(basic_pay) as SalarySum,avg(basic_pay) as AvgSalary from dbo.employeepayroll
+                                   where gender=@parameter group by gender";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connection);
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", gender);
+                    /// Opening the connection to start mapping
+                    connection.Open();
+                    /// executing the sql data reader to fetch the records
+                    SqlDataReader reader = command.ExecuteReader();
+                    /// executing for not null
+                    if (reader.HasRows)
+                    {
+                        /// Moving to the next record from the table
+                        /// Mapping the data to the retrieved data from executing the query on the table
+                        while (reader.Read())
+                        {
+                            int empCount = reader.GetInt32(1);
+                            double minSalary = reader.GetDouble(2);
+                            double maxSalary = reader.GetDouble(3);
+                            double sumOfSalary = reader.GetDouble(4);
+                            double avgSalary = reader.GetDouble(5);
+                            Console.WriteLine($"Gender:{gender}\nEmployee Count:{empCount}\nMinimum Salary:{minSalary}\nMaximum Salary:{maxSalary}\n" +
+                                $"Total Salary for {gender} :{sumOfSalary}\n" + $"Average Salary:{avgSalary}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data found");
+                    }
+                    reader.Close();
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+    }    
 }
