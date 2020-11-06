@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
 namespace EmployeeADO.net
 {
-    public  class EmployeeRepository
+    public class EmployeeRepository
     {
         //Initialising connection to avoid multiple reconnections
         public static SqlConnection connection { get; set; }
@@ -20,7 +21,7 @@ namespace EmployeeADO.net
             DBConnection con = new DBConnection();
             //Calling getConnection method from DBConnection
             connection = con.GetConnection();
-            using(connection)
+            using (connection)
             {
                 Console.WriteLine("Connection is established");
             }
@@ -70,7 +71,7 @@ namespace EmployeeADO.net
                             Console.WriteLine(model.id + " " + model.name + " " + model.start + " " + model.gender + " "
                                 + model.phone_number + " " + model.address + " " + model.department + " " + model.basic_pay + " " + model.deductions + " "
                                 + model.taxable_pay + " " + model.income_tax + " " + model.net_pay + " ");
-                        }                   
+                        }
                     }
                     else
                     {
@@ -80,7 +81,7 @@ namespace EmployeeADO.net
                 }
             }
             //Catching exception in case if any discrepancy
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -109,7 +110,7 @@ namespace EmployeeADO.net
 
             try
             {
-                using(connection)
+                using (connection)
                 {
                     //Sql query to update records of the employess
                     string query = "Update dbo.employeepayroll set basic_pay = @parameter2 where name = @parameter1 ";
@@ -121,14 +122,14 @@ namespace EmployeeADO.net
                     //returns the number of rows affected
                     var result = command.ExecuteNonQuery();
                     //returning the values
-                    if(result!=0)
+                    if (result != 0)
                     {
                         return true;
                     }
                     return false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -136,6 +137,42 @@ namespace EmployeeADO.net
             {
                 connection.Close();
             }
+        }
+        public bool UpdateEmployeeDataStoredProcedure(string name, double salary)
+        {
+            //Establishing connection
+            DBConnection con = new DBConnection();
+            connection = con.GetConnection();
+            
+            try
+            {
+                using(connection)
+                {                   
+                    /// Pssing the stored procedure instead pf query
+                    SqlCommand command = new SqlCommand("spUpdateSalary", connection);
+                    // command text to have stored procedure
+                    command.CommandType = CommandType.StoredProcedure;
+                    // adding values to the parameter
+                    command.Parameters.AddWithValue("@salary", salary);
+                    command.Parameters.AddWithValue("@name", name);
+                    connection.Open();
+                    //storing the bool result in result
+                    var result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }   
         }
     }
 }

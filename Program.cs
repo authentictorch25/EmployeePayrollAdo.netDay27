@@ -8,9 +8,10 @@ namespace EmployeeADO.net
         {
             EmployeeRepository tool = new EmployeeRepository();
             tool.Connection();
-          //  tool.GetEmployeeDetails();
-            bool result = tool.UpdateEmployeeData("Rachel", 50000);
-            Console.WriteLine(result?"Updated Successfully":"Update failed");
+            //  tool.GetEmployeeDetails();
+            // bool result = tool.UpdateEmployeeData("Rachel", 50000);
+            bool result = tool.UpdateEmployeeDataStoredProcedure("Rachel", 70000);
+;            Console.WriteLine(result?"Updated Successfully":"Update failed");
             tool.GetEmployeeDetails();
         }
     }
