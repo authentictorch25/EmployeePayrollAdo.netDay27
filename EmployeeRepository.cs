@@ -90,5 +90,52 @@ namespace EmployeeADO.net
                 connection.Close();
             }
         }
+        /// <summary>
+        /// Updates the employee data.
+        /// </summary>
+        /// --UC3 Updates salary of the employee
+        /// returns bool value to identify
+        /// <param name="name">The name.</param>
+        /// <param name="salary">The salary.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public bool UpdateEmployeeData(string name, double salary)
+        {
+            //Establishing connection
+            DBConnection con = new DBConnection();
+            connection = con.GetConnection();
+            //Creating model employee to map the details
+            EmployeeModel model = new EmployeeModel();
+
+            try
+            {
+                using(connection)
+                {
+                    //Sql query to update records of the employess
+                    string query = "Update dbo.employeepayroll set basic_pay = @parameter2 where name = @parameter1 ";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    connection.Open();
+                    //Aiinf values to the parameter given in the query
+                    command.Parameters.AddWithValue("@parameter1", name);
+                    command.Parameters.AddWithValue("@parameter2", 50000);
+                    //returns the number of rows affected
+                    var result = command.ExecuteNonQuery();
+                    //returning the values
+                    if(result!=0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
